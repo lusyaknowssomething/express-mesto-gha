@@ -4,7 +4,7 @@ exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       if (users.length === 0) {
-        return res.status(404).send({ message: 'Список пользователей пуст' });
+        return res.status(200).send({});
       }
       return res.send({ data: users });
     })
@@ -19,7 +19,12 @@ exports.getUserById = (req, res) => {
       }
       return res.send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((error) => {
+      if (error.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные при поиске пользователя' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 exports.createUser = (req, res) => {
@@ -29,7 +34,7 @@ exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+        return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
@@ -39,12 +44,12 @@ exports.updateUser = (req, res) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
-    req.params._id,
+    req.user._id,
     { name, about },
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: true, // если пользователь не найден, он будет создан
+      upsert: false, // если пользователь не найден, он не будет создан
     },
   )
     .then((userData) => {
@@ -53,7 +58,12 @@ exports.updateUser = (req, res) => {
       }
       return res.send({ data: userData });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((error) => {
+      if (error.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении пользователя.' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
 exports.updateAvatar = (req, res) => {
@@ -76,7 +86,7 @@ exports.updateAvatar = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
+        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
