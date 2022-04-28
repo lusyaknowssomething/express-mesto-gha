@@ -13,8 +13,7 @@
   "scripts": {
     "lint": "npx eslint .",
     "start": "node app.js",
-    "dev": "nodemon app.js",
-    "start:debug": "nodemon app.js"
+    "dev": "nodemon app.js"
   },
   "dependencies": {
     "express": "^4.17.3",

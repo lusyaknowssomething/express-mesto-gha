@@ -3,10 +3,7 @@ const Card = require('../models/card');
 exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => {
-      if (cards.length === 0) {
-        return res.status(200).send({});
-      }
-      return res.send({ data: cards });
+      res.send({ data: cards });
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
@@ -34,7 +31,7 @@ exports.deleteCardById = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при удалении карточки' });
+        return res.status(400).send({ message: 'Переданы некорректные данные при удалении карточки' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
@@ -54,7 +51,7 @@ exports.likeCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка.' });
+        return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка.' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
@@ -74,7 +71,7 @@ exports.dislikeCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка.' });
+        return res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка.' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });

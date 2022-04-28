@@ -3,10 +3,7 @@ const User = require('../models/user');
 exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => {
-      if (users.length === 0) {
-        return res.status(200).send({});
-      }
-      return res.send({ data: users });
+      res.send({ data: users });
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
@@ -21,7 +18,7 @@ exports.getUserById = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при поиске пользователя' });
+        return res.status(400).send({ message: 'Переданы некорректные данные при поиске пользователя' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
@@ -49,7 +46,6 @@ exports.updateUser = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: false, // если пользователь не найден, он не будет создан
     },
   )
     .then((userData) => {
