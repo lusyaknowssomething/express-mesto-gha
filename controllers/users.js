@@ -51,7 +51,7 @@ exports.createUser = (req, res, next) => {
     }))
     .catch((error) => {
       if (error.code === 11000) {
-        throw new ConflictError('Пользователь с таким email уже зарегистрирован');
+        throw new ConflictError({ message: 'Пользователь с таким email уже зарегистрирован' });
       } else {
         next(error);
       }
@@ -127,27 +127,4 @@ exports.login = (req, res, next) => {
         .end();
     })
     .catch(next);
-  // User.findOne({ email })
-  //   .then((user) => {
-  //     if (!user) {
-  //       return Promise.reject(new Error('Неправильные почта или пароль'));
-  //     }
-  //     // сравниваем переданный пароль и хеш из базы
-  //     return bcrypt.compare(password, user.password);
-  //   })
-  //   .then((matched) => {
-  //     if (!matched) {
-  //       // хеши не совпали — отклоняем промис
-  //       return Promise.reject(new Error('Неправильные почта или пароль'));
-  //     }
-
-  //     // аутентификация успешна
-  //     res.send({ message: 'Всё верно!' });
-  //   })
-  //   .catch((err) => {
-  //     // возвращаем ошибку аутентификации
-  //     res
-  //       .status(401)
-  //       .send({ message: err.message });
-  //   });
 };
