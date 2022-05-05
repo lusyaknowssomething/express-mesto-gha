@@ -44,7 +44,11 @@ exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send({
+      data: {
+        name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+      },
+    }))
     .catch((error) => {
       if (error.code === 11000) {
         throw new ConflictError('Пользователь с таким email уже зарегистрирован');
