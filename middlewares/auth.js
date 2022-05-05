@@ -18,7 +18,6 @@ exports.Auth = (req, res, next) => {
   } catch (err) {
     throw new UnauthorizedError('Необходима авторизация');
   }
-  console.log(payload);
   req.user = payload;
 
   next();
