@@ -52,8 +52,6 @@ exports.createUser = (req, res, next) => {
     .catch((error) => {
       if (error.code === 11000) {
         throw new ConflictError('Пользователь с таким email уже зарегистрирован');
-      } else if (error.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при создании пользователя');
       } else {
         next(error);
       }
