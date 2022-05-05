@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
+const validator = require('validator');
 const { usersRoutes } = require('./routes/users');
 const { cardsRoutes } = require('./routes/cards');
 const { createUser, login } = require('./controllers/users');
@@ -31,11 +32,18 @@ app.post('/signin', express.json(), celebrate({
   }),
 }), login);
 
+const urlValidation = (value, helpers) => {
+  if (!validator.isURL(value)) {
+    return helpers.message('Введите корректную ссылку');
+  }
+  return value;
+};
+
 app.post('/signup', express.json(), celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().custom(urlValidation),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
