@@ -51,7 +51,7 @@ exports.createUser = (req, res, next) => {
     }))
     .catch((error) => {
       if (error.code === 11000) {
-        throw new ConflictError({ message: 'Пользователь с таким email уже зарегистрирован' });
+        next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
       } else {
         next(error);
       }
