@@ -28,7 +28,7 @@ exports.getUserById = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        throw new BadRequestError({ message: 'Переданы некорректные данные при поиске пользователя' });
+        throw new BadRequestError('Переданы некорректные данные при поиске пользователя');
       } else {
         next(error);
       }
@@ -78,7 +78,7 @@ exports.updateUser = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        throw new BadRequestError({ message: 'Переданы некорректные данные при обновлении пользователя.' });
+        throw new BadRequestError('Переданы некорректные данные при обновлении пользователя.');
       } else {
         next(error);
       }
@@ -106,7 +106,7 @@ exports.updateAvatar = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        throw new BadRequestError({ message: 'Переданы некорректные данные при обновлении аватара.' });
+        throw new BadRequestError('Переданы некорректные данные при обновлении аватара.');
       } else {
         next(error);
       }
