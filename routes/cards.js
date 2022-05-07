@@ -24,8 +24,20 @@ cardsRoutes.post('/cards', express.json(), celebrate({
     link: Joi.string().required().custom(urlValidation),
   }),
 }), createCard);
-cardsRoutes.delete('/cards/:cardId', deleteCardById);
-cardsRoutes.put('/cards/:cardId/likes', likeCard);
-cardsRoutes.delete('/cards/:cardId/likes', dislikeCard);
+cardsRoutes.delete('/cards/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), deleteCardById);
+cardsRoutes.put('/cards/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), likeCard);
+cardsRoutes.delete('/cards/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), dislikeCard);
 
 exports.cardsRoutes = cardsRoutes;

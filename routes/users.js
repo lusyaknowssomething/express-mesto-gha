@@ -20,7 +20,11 @@ const urlValidation = (value, helpers) => {
 
 usersRoutes.get('/users', getUsers);
 usersRoutes.get('/users/:userId', getUserById);
-usersRoutes.get('/users/me', getMyProfile);
+usersRoutes.get('/users/me', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
+  }),
+}), getMyProfile);
 usersRoutes.post('/users', express.json(), createUser);
 usersRoutes.patch('/users/me', express.json(), celebrate({
   body: Joi.object().keys({
