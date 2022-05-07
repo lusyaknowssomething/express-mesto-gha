@@ -19,6 +19,13 @@ exports.getUsers = (req, res, next) => {
 };
 
 exports.getUserById = (req, res, next) => {
+  const userId = req.user._id;
+  User.findById(userId)
+    .then((user) => res.send(user))
+    .catch(next);
+};
+
+exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user.length >= 1) {
