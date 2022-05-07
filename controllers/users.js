@@ -124,11 +124,9 @@ exports.updateAvatar = (req, res, next) => {
 exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    throw new UnauthorizedError('Не передан email или пароль');
-  } else {
-    return User.findUserByCredentials(email, password)
-      .then((user) => {
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      if (user) {
         const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
         res
           .cookie('jwt', token, {
@@ -136,7 +134,9 @@ exports.login = (req, res, next) => {
             httpOnly: true,
           })
           .end();
-      })
-      .catch(next);
-  }
+      } else {
+        throw new UnauthorizedError('Проблема авторизации. Введите вверный email и пароль');
+      }
+    })
+    .catch(next);
 };
