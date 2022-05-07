@@ -59,13 +59,11 @@ exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.params.cardId } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .then((card) => {
-      if (card) {
-        res.send({ card });
-      } else {
-        throw new NotFoundError('Передан несуществующий _id карточки.');
-      }
+    .orFail()
+    .catch(() => {
+      throw new NotFoundError('Передан несуществующий _id карточки.');
     })
+    .then((card) => res.send({ card }))
     .catch((error) => {
       if (error.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные для постановки лайка.');
@@ -81,13 +79,11 @@ exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.params.cardId } }, // убрать _id из массива
     { new: true },
   )
-    .then((card) => {
-      if (card) {
-        res.send({ data: card });
-      } else {
-        throw new NotFoundError('Передан несуществующий _id карточки.');
-      }
+    .orFail()
+    .catch(() => {
+      throw new NotFoundError('Передан несуществующий _id карточки.');
     })
+    .then((card) => res.send({ card }))
     .catch((error) => {
       if (error.name === 'CastError') {
         throw new BadRequestError('Переданы некорректные данные для снятия лайка.');
