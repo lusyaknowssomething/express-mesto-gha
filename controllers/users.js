@@ -4,6 +4,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/conflict-err');
 const BadRequestError = require('../errors/bad-request-err');
+const UnauthorizedError = require('../errors/unauthorized-err');
 
 //  const { NODE_ENV, JWT_SECRET } = process.env;
 const NODE_ENV = 'production';
@@ -116,15 +117,19 @@ exports.updateAvatar = (req, res, next) => {
 exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
-      res
-        .cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-        })
-        .end();
-    })
-    .catch(next);
+  if (!email || !password) {
+    throw new UnauthorizedError('Не передан email или пароль');
+  } else {
+    return User.findUserByCredentials(email, password)
+      .then((user) => {
+        const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+        res
+          .cookie('jwt', token, {
+            maxAge: 3600000 * 24 * 7,
+            httpOnly: true,
+          })
+          .end();
+      })
+      .catch(next);
+  }
 };
