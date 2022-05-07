@@ -36,7 +36,7 @@ exports.deleteCardById = (req, res, next) => {
     })
     .then((card) => {
       if (card.owner.toString() !== userId) {
-        throw new UnauthorizedError('Невозможно удалить чужую карточку');
+        throw new NotFoundError('Невозможно удалить чужую карточку');
       }
       Card.findByIdAndRemove(cardId)
         .then((cardForDelete) => {
