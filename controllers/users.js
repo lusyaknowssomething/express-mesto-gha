@@ -25,7 +25,7 @@ exports.getUserById = (req, res, next) => {
     .catch(next);
 };
 
-exports.getUserById = (req, res, next) => {
+exports.getMyProfile = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user.length >= 1) {
