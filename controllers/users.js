@@ -17,17 +17,17 @@ exports.getUsers = (req, res, next) => {
     .catch((error) => next(error));
 };
 
-exports.getUserById = (req, res, next) => {
+exports.getMyProfile = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
     .then((user) => res.send(user))
     .catch(next);
 };
 
-exports.getMyProfile = (req, res, next) => {
+exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (user.length >= 1) {
+      if (user) {
         res.send({ data: user });
       } else {
         throw new NotFoundError('Не удалось найти пользователя');
@@ -35,7 +35,7 @@ exports.getMyProfile = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        throw new BadRequestError('Переданы некорректные данные при поиске пользователя');
+        next(new BadRequestError('Переданы некорректные данные при поиске пользователя'));
       } else {
         next(error);
       }
@@ -85,7 +85,7 @@ exports.updateUser = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при обновлении пользователя.');
+        next(new BadRequestError('Переданы некорректные данные при обновлении пользователя.'));
       } else {
         next(error);
       }
@@ -113,7 +113,7 @@ exports.updateAvatar = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при обновлении аватара.');
+        next(new BadRequestError('Переданы некорректные данные при обновлении аватара.'));
       } else {
         next(error);
       }
