@@ -49,7 +49,8 @@ exports.deleteCardById = (req, res, next) => {
             next(error);
           }
         });
-    });
+    })
+    .catch(next);
 };
 
 exports.likeCard = (req, res, next) => {
