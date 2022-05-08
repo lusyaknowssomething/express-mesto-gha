@@ -56,7 +56,7 @@ exports.deleteCardById = (req, res, next) => {
 exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: req.params.cardId } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
     .orFail()
@@ -76,7 +76,7 @@ exports.likeCard = (req, res, next) => {
 exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $pull: { likes: req.params.cardId } }, // убрать _id из массива
+    { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
     .orFail()
